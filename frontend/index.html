@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DecisionLens AI — Live Decision Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="scanline" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">◈</span>
+    <span class="brand-name">DECISIONLENS<span class="accent">AI</span></span>
+  </div>
+  <div class="status-cluster">
+    <span class="status-dot" id="statusDot"></span>
+    <span id="statusText" class="mono">CONNECTING…</span>
+    <span class="divider">/</span>
+    <span id="datasetLabel" class="mono muted">no dataset loaded</span>
+  </div>
+</header>
+
+<div class="ticker-wrap" aria-label="live signal feed">
+  <div class="ticker-track" id="tickerTrack">
+    <span class="ticker-item mono">Awaiting data — load the demo dataset or upload a CSV to go live…</span>
+  </div>
+</div>
+
+<main class="grid">
+
+  <!-- Data source panel -->
+  <section class="panel intake">
+    <h2 class="panel-title"><span class="eyebrow">01</span> Data intake</h2>
+    <p class="panel-sub">Connect a source. In this MVP: CSV upload or the bundled synthetic retail feed. Wire in your databases, IoT streams, or market-data APIs on the backend — every downstream panel just consumes a pandas DataFrame.</p>
+    <div class="intake-actions">
+      <label class="btn btn-primary" for="csvInput">
+        <input type="file" id="csvInput" accept=".csv,.tsv" hidden />
+        Upload CSV
+      </label>
+      <button class="btn btn-ghost" id="loadSampleBtn">Load demo data (retail sales)</button>
+    </div>
+    <div id="intakeMeta" class="intake-meta mono muted"></div>
+  </section>
+
+  <!-- KPI row -->
+  <section class="kpi-row" id="kpiRow" aria-label="key metrics">
+    <div class="kpi-placeholder">Metrics will appear here once data is loaded.</div>
+  </section>
+
+  <!-- Insights -->
+  <section class="panel insights">
+    <h2 class="panel-title"><span class="eyebrow">02</span> Anomalies &amp; insights</h2>
+    <p class="panel-sub">Z-score + Isolation Forest, computed per group.</p>
+    <div id="insightsList" class="insights-list">
+      <p class="empty-state">No anomalies detected yet — load a dataset to run detection.</p>
+    </div>
+  </section>
+
+  <!-- Forecast -->
+  <section class="panel forecast">
+    <h2 class="panel-title"><span class="eyebrow">03</span> Predictive forecast</h2>
+    <div class="forecast-controls">
+      <label class="field">
+        <span>Metric</span>
+        <select id="forecastColumn"></select>
+      </label>
+      <label class="field">
+        <span>Group</span>
+        <select id="forecastGroup"><option value="">All</option></select>
+      </label>
+      <label class="field">
+        <span>Horizon</span>
+        <select id="forecastPeriods">
+          <option value="7">7 periods</option>
+          <option value="14">14 periods</option>
+          <option value="30">30 periods</option>
+        </select>
+      </label>
+      <button class="btn btn-primary btn-small" id="runForecastBtn">Run forecast</button>
+    </div>
+    <div class="chart-wrap"><canvas id="forecastChart" height="220"></canvas></div>
+    <p id="forecastNote" class="mono muted small"></p>
+  </section>
+
+  <!-- NL Query -->
+  <section class="panel query">
+    <h2 class="panel-title"><span class="eyebrow">04</span> Ask DecisionLens</h2>
+    <p class="panel-sub">e.g. <em>“Why did sales drop today?”</em>, <em>“Forecast inventory for 14 days”</em>, <em>“Summarize temperature”</em></p>
+    <form id="queryForm" class="query-form">
+      <input type="text" id="queryInput" class="query-input" placeholder="Ask a question about your data…" autocomplete="off" />
+      <button type="submit" class="btn btn-primary">Ask</button>
+    </form>
+    <div id="queryAnswer" class="query-answer"></div>
+  </section>
+
+  <!-- Alerts -->
+  <section class="panel alerts">
+    <h2 class="panel-title"><span class="eyebrow">05</span> Live alert feed</h2>
+    <div class="alerts-controls">
+      <label class="field small">
+        <span>Sensitivity (z ≥)</span>
+        <input type="range" id="alertThreshold" min="1" max="4" step="0.25" value="2.5" />
+        <span id="alertThresholdVal" class="mono">2.5</span>
+      </label>
+    </div>
+    <div id="alertsList" class="alerts-list">
+      <p class="empty-state">No alerts yet.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer mono muted">
+  DecisionLens AI · reference implementation · analytics run in-process (z-score + Isolation Forest + OLS forecast) · swap the storage layer for production
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
