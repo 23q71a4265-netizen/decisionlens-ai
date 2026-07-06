@@ -1,0 +1,9 @@
+services:
+  decisionlens:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      # Optional: set this to get LLM-powered NL-query answers instead of
+      # the built-in rule-based engine. Works fine without it.
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
